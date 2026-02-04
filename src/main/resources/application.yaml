@@ -2,12 +2,14 @@ server:
   port: 8081
 spring:
   application:
-    name: hmdp
+    name: flowhub
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
+    #url: jdbc:mysql://localhost:3306/hmdp?useSSL=false&serverTimezone=UTC
     url: jdbc:mysql://localhost:3306/hmdp?useSSL=false&serverTimezone=UTC
     username: root
-    password: a18320629925
+    password: 1234
+    #password: a18320629925
   redis:
     host: localhost
     port: 6379
@@ -20,10 +22,10 @@ spring:
   jackson:
     default-property-inclusion: non_null # JSON处理时忽略非空字段
 mybatis-plus:
-  type-aliases-package: com.hmdp.entity # 别名扫描包
+  type-aliases-package: com.flowhub.entity # 别名扫描包
 logging:
   level:
-    com.hmdp: debug
+    com.flowhub: debug
     org.springframework.jdbc: DEBUG    # 查看数据库连接
     com.zaxxer.hikari: DEBUG          # 查看连接池
     io.lettuce.core: DEBUG            # 查看Redis连接
