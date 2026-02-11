@@ -42,46 +42,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
+    //发送验证码
     @Override
     public Result sendCode(String phone){
         //1.校验手机号
         if(RegexUtils.isPhoneInvalid(phone)){
             return Result.fail("手机号格式错误");
         }
-        //2.不符合返回错误
-        //3.符合，生成验证码
+        //2.生成验证码
         String code = RandomUtil.randomNumbers(6);
-
-        //4，保存验证码到session
+        //3.保存验证码到redis
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);
-        // 5.发送验证码
-        log.debug(code);
-        // 返回ok
-        return Result.ok();
+        //4.返回ok
+        return Result.ok(code);
     }
 
+    //登录
     @Override
     public Result login(LoginFormDTO loginForm){
-        // 1.?????
+        //1.校验手机号
         String phone = loginForm.getPhone();
-        // 2.????????????
+        //2.校验验证码
         if(RegexUtils.isPhoneInvalid(phone)){
-            return Result.fail("???????");
+            return Result.fail("手机号格式错误");
         }
-        // 3.?????
+        //3.从redis中获取验证码
         String cacheCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY + phone);
         String code = loginForm.getCode();
         if(cacheCode == null || !cacheCode.equals(code)){
-            return Result.fail("?????");
+            return Result.fail("验证码错误");
         }
         stringRedisTemplate.delete(LOGIN_CODE_KEY + phone);
-        // 4.?????????
+        //4.查询用户
         User user = query().eq("phone", phone).one();
-        // 5.??????
+        //5.不存在则创建用户
         if(user == null){
             user = createUserWithPhone(phone);
         }
-        // 6.??token????????Redis
+        // 6.生成token
         String token = UUID.randomUUID().toString(true);
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         Map<String, Object> userMap = BeanUtil.beanToMap(

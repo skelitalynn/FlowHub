@@ -43,7 +43,7 @@
 
 ## 快速开始
 ### 1) 导入数据库
-SQL 文件：`src/main/resources/db/hmdp.sql`
+SQL 文件：`src/main/resources/db/flowhub.sql`
 
 ### 2) 修改配置
 `src/main/resources/application.yaml`
@@ -65,7 +65,7 @@ src/main/java/com/flowhub/
   utils/
 src/main/resources/
   application.yaml
-  db/hmdp.sql
+  db/flowhub.sql
   mapper/
 ```
 
